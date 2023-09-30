@@ -1,61 +1,66 @@
-import React from 'react';
-import { nanoid } from 'nanoid';
-import * as Yup from 'yup';
-import { Formik } from 'formik';
-import {
-  StyledForm,
-  FormInput,
-  FormLabel,
-  FormButton,
-  StyledErrorName,
-  StyledErrorNumber,
-} from './Form.styled';
-import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from '../../redux/operations';
-import { selectContacts } from '../../redux/selectors';
+import Button from '@mui/material/Button';
+import { useState } from 'react';
+import { ContainerForm, ContaierField, FieldItem } from './Form.styled';
 
-const SignupSchema = Yup.object().shape({
-  name: Yup.string().min(3, 'Too Short!').required('Required'),
-  number: Yup.number().min(6).required('Required'),
-});
+export function Form({ onData }) {
+  const initialState = {
+    name: '',
+    number: '',
+  };
 
-export const ContactForm = () => {
-  const contacts = useSelector(selectContacts);
-  const dispatch = useDispatch();
+  const [state, setState] = useState({ ...initialState });
+  const { name, number } = state;
+
+  const handleChange = ({ target }) => {
+    const { name, value } = target;
+    setState(prevState => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    onData({ ...state });
+    setState({ ...initialState });
+  };
+
   return (
-    <Formik
-      initialValues={{
-        name: '',
-        number: '',
-      }}
-      validationSchema={SignupSchema}
-      onSubmit={(values, actions) => {
-        const enteredName = values.name;
-        const enteredNumber = values.number;
-
-        const isContactExists = contacts.find(
-          contact =>
-            contact.name.toLowerCase() === enteredName.toLowerCase() ||
-            contact.number === enteredNumber
-        );
-
-        if (isContactExists) {
-          return alert(`${enteredName} is already in your phonebook`);
-        }
-        dispatch(addContact({ id: nanoid(), ...values }));
-        actions.resetForm();
-      }}
-    >
-      <StyledForm>
-        <FormLabel htmlFor="name">Name</FormLabel>
-        <FormInput type="text" name="name" placeholder="Ivan Ivanenko" />
-        <StyledErrorName name="name" component="div" />
-
-        <FormLabel htmlFor="number">Number</FormLabel>
-        <FormInput type="tel" name="number" placeholder="380631111111" />
-        <StyledErrorNumber name="name" component="div" />
-        <FormButton type="submit">Add contact</FormButton>
-      </StyledForm>
-    </Formik>
+    <ContainerForm onSubmit={handleSubmit}>
+      <ContaierField>
+        Name
+        <FieldItem
+          type="text"
+          name="name"
+          value={name}
+          pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
+          title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
+          required
+          placeholder=" enter name"
+          onChange={handleChange}
+        />
+      </ContaierField>
+      <ContaierField>
+        Phone number
+        <FieldItem
+          type="tel"
+          name="number"
+          value={number}
+          pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
+          title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
+          required
+          placeholder=" enter number"
+          onChange={handleChange}
+        />
+      </ContaierField>
+      <Button
+        variant="contained"
+        size="small"
+        type="submit"
+        disabled={!name || !number}
+      >
+        Add contact
+      </Button>
+    </ContainerForm>
   );
-};
+}

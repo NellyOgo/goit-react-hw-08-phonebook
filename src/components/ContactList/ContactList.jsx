@@ -1,38 +1,30 @@
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  ListItem,
-  DeleteContactButton,
-  List,
-  NoContactsMessage,
-} from './ContactList.styled';
-import { deleteContact } from '../../redux/operations';
-import { selectVisibleContacts } from '../../redux/selectors';
+import * as React from 'react';
+import Button from '@mui/material/Button';
+import PropTypes from 'prop-types';
+import { ContactContainer, ContactEl } from './ContactList.styled';
 
-export const ContactList = () => {
-  const contacts = useSelector(selectVisibleContacts);
-  const dispatch = useDispatch();
-
-  if (contacts.length === 0) {
-    return (
-      <NoContactsMessage>
-        Sorry! No contacts in your phonebook!
-      </NoContactsMessage>
-    );
-  }
+export const ContactList = ({ contacts, onDeleteContact }) => {
   return (
-    <List>
-      {contacts.map(contact => (
-        <ListItem key={contact.id}>
-          {contact.name}:{''} {contact.number}
-          <DeleteContactButton
-            onClick={() => {
-              dispatch(deleteContact(contact.id));
-            }}
+    <ContactContainer>
+      {contacts.map(({ id, name, number }) => (
+        <ContactEl key={id}>
+          <span>{name}: </span>
+          <span>{number}</span>
+          <Button
+            variant="contained"
+            size="small"
+            type="button"
+            onClick={() => onDeleteContact(id)}
           >
             Delete
-          </DeleteContactButton>
-        </ListItem>
+          </Button>
+        </ContactEl>
       ))}
-    </List>
+    </ContactContainer>
   );
+};
+
+ContactList.propTypes = {
+  contacts: PropTypes.array.isRequired,
+  onDeleteContact: PropTypes.func.isRequired,
 };
