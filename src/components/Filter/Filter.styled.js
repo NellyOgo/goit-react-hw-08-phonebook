@@ -7,7 +7,7 @@ export const FilterContainer = styled.label`
 `;
 
 export const Field = styled.input`
-  border: 1px solid #d3d3d3;
+  border: 1px solid #434743;
   cursor: pointer;
   margin-top: 5px;
 `;

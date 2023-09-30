@@ -11,7 +11,7 @@ export const Loader = ({ size = 'lg' }) => {
   return (
     <WrapperLoader>
       <RotatingLines
-        strokeColor="#19d275"
+        strokeColor="black"
         strokeWidth="4"
         width={sizes[size]}
         animationDuration="1.2"

@@ -11,7 +11,7 @@ export const NavStyled = styled(NavLink)`
   font-size: 22px;
   font-weight: 700;
   margin-right: 20px;
-  color: #19d275;
+  color: black;
   &.active {
     color: black;
   }

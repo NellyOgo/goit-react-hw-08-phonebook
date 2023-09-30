@@ -6,7 +6,7 @@ export const AuthNavStyled = styled(NavLink)`
   font-size: 22px;
   font-weight: 700;
   margin-right: 20px;
-  color: #ebeceb;
+  color: #434743;
   &.active {
     color: black;
   }
